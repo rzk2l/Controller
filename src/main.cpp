@@ -162,7 +162,6 @@ void pidController(){
   float pitchPID = 0;
   float rollPID = 0;
   ///////////////// ADDED FOR COMMS /////////////////////////////
-  //pulseLength[THROTTLE_INDEX] = throttleCmd;
   Kp[PITCH_INDEX] = newKp;
   Kp[ROLL_INDEX] = newKp;
   Ki[PITCH_INDEX] = newKi;
@@ -234,6 +233,9 @@ void pidController(){
   return set_point;
 } */
 
+void secMeasure(){
+  ESCFLspeed, ESCFRspeed, ESCBRspeed, ESCBLspeed = 1000;
+}
 
 void motorSpeed(){
   ESCFR.writeMicroseconds(ESCFRspeed);
@@ -242,7 +244,7 @@ void motorSpeed(){
   ESCBL.writeMicroseconds(ESCBLspeed);
 }
 
-float now, previousUpdate, deltaTime = 0;
+// float now, previousUpdate, deltaTime = 0;
 
 
 void setup(){
@@ -260,29 +262,33 @@ void setup(){
   resetPidController();
 }
 void loop(){
-  //now = millis();
-  //deltaTime = now - previousTime;
-  ///////////////// ADDED FOR COMMS /////////////////////////////
-  WiFiClient client = server.available();
-  if (client) {
-    handleClientRequest(client);
-  }
-  ///////////////// ADDED FOR COMMS /////////////////////////////
-  getAngles();
-  //previousTime = now;
+  while (killFlag!=1){
+    //now = millis();
+    //deltaTime = now - previousTime;
+    ///////////////// ADDED FOR COMMS /////////////////////////////
+    WiFiClient client = server.available();
+    if (client) {
+      handleClientRequest(client);
+    }
+    ///////////////// ADDED FOR COMMS /////////////////////////////
+    getAngles();
+    //previousTime = now;
 
-  calculateErrors();
-  pidController();
-  log("Throttle :");
-  logln(throttleCmd);
-  log("Kp :");
-  logln(Kp[PITCH_INDEX]);
-  log("Ki :");
-  logln(Ki[PITCH_INDEX]);
-  log("Kd :");
-  logln(Kd[PITCH_INDEX]);
-  motorSpeed();
-  
+    calculateErrors();
+    pidController();
+    log("Throttle :");
+    logln(throttleCmd);
+    log("Kp :");
+    logln(Kp[PITCH_INDEX]);
+    log("Ki :");
+    logln(Ki[PITCH_INDEX]);
+    log("Kd :");
+    logln(Kd[PITCH_INDEX]);
+    log("FLAG");
+    logln(killFlag);
+    motorSpeed();
+  }
+  secMeasure(); return;
   /* if(deltaTime > 8){
     calculateErrors();
     pidController();

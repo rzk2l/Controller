@@ -234,7 +234,11 @@ void pidController(){
 } */
 
 void secMeasure(){
-  ESCFLspeed, ESCFRspeed, ESCBRspeed, ESCBLspeed = 1000;
+  //ESCFLspeed, ESCFRspeed, ESCBRspeed, ESCBLspeed = 1000;
+  ESCFR.writeMicroseconds(1000);
+  ESCFL.writeMicroseconds(1000);
+  ESCBR.writeMicroseconds(1000);
+  ESCBL.writeMicroseconds(1000);
 }
 
 void motorSpeed(){
@@ -255,7 +259,7 @@ void setup(){
   ///////////////// ADDED FOR COMMS /////////////////////////////
   imuSetup();
   escInit();
-  //escCalibration();
+  escCalibration();
   imuCalibration();
   resetAngles(&pitch,&roll,&yaw);
   

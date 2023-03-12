@@ -246,6 +246,7 @@ void motorSpeed(){
   ESCFL.writeMicroseconds(ESCFLspeed);
   ESCBR.writeMicroseconds(ESCBRspeed);
   ESCBL.writeMicroseconds(ESCBLspeed);
+  delay(10000);
 }
 
 // float now, previousUpdate, deltaTime = 0;
@@ -292,7 +293,7 @@ void loop(){
     logln(killFlag);
     motorSpeed();
   }
-  secMeasure(); return;
+  secMeasure(); exit(0);
   /* if(deltaTime > 8){
     calculateErrors();
     pidController();

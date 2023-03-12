@@ -239,6 +239,7 @@ void secMeasure(){
   ESCFL.writeMicroseconds(1000);
   ESCBR.writeMicroseconds(1000);
   ESCBL.writeMicroseconds(1000);
+  delay(10000);
 }
 
 void motorSpeed(){
@@ -246,7 +247,6 @@ void motorSpeed(){
   ESCFL.writeMicroseconds(ESCFLspeed);
   ESCBR.writeMicroseconds(ESCBRspeed);
   ESCBL.writeMicroseconds(ESCBLspeed);
-  delay(10000);
 }
 
 // float now, previousUpdate, deltaTime = 0;

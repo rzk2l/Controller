@@ -31,7 +31,7 @@ float errorsDelta[3] = {0,0,0}; // FOR THE DERIVATIVE PART
 float previousError[3] = {0,0,0}; // FOR THE DERIVATIVE PART
 
 //PID COEFFICIENTS YAW,PITCH, ROLL
-float Kp[3] = {3 ,10 ,10};
+float Kp[3] = {3 ,0 ,0};
 float Ki[3] = {0.02 ,0 ,0};
 float Kd[3] = {0 ,0 ,0};
 
@@ -260,7 +260,7 @@ void setup(){
   ///////////////// ADDED FOR COMMS /////////////////////////////
   imuSetup();
   escInit();
-  escCalibration();
+  //escCalibration();
   imuCalibration();
   resetAngles(&pitch,&roll,&yaw);
   

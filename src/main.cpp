@@ -3,9 +3,9 @@
 #include <Wire.h>
 #include <mpu_funcs.h>
 
-///////////////// ADDED FOR COMMS /////////////////////////////
+///////////////// COMMS /////////////////////////////
 #include <Comms_funcs_gui.h>
-///////////////////////////////////////////////////////////////
+//////////////// COMMS //////////////////////////////
 #define KILL_SPEED 950
 #define MIN_SPEED 1000
 #define MAX_SPEED 2000  
@@ -21,8 +21,7 @@
 //--------------------
 volatile unsigned int pulseLength[4] = {1500, 1500, 1500, 1200};
 unsigned long ESCFRspeed, ESCFLspeed, ESCBRspeed, ESCBLspeed = 1000;
-//bool state = false;
-//int swit;
+
 // GLOBAL VARS FOR PID CONTROLLER 
 float angle_Setpoints[3] = {0,0,0}; // YAW, PITCH, ROLL
 float errors[3]; 
@@ -50,7 +49,7 @@ void escInit(){
   ESCBR.attach(MOTOR_PIN_BR,MIN_SPEED,MAX_SPEED);
   ESCBL.attach(MOTOR_PIN_BL,MIN_SPEED,MAX_SPEED);
 
-  //resetAngles(&pitch,&roll,&yaw);
+  resetAngles(&pitch,&roll,&yaw);
 }
 
 void getAngles(){
@@ -161,14 +160,14 @@ void pidController(){
   float yawPID = 0;
   float pitchPID = 0;
   float rollPID = 0;
-  ///////////////// ADDED FOR COMMS /////////////////////////////
+  ///////////////// COMMS /////////////////////////////
   Kp[PITCH_INDEX] = newKp;
   Kp[ROLL_INDEX] = newKp;
   Ki[PITCH_INDEX] = newKi;
   Ki[ROLL_INDEX] = newKi;
   Kd[PITCH_INDEX] = newKd;
   Kd[ROLL_INDEX] = newKd;
-  ///////////////// ADDED FOR COMMS /////////////////////////////
+  ///////////////// COMMS /////////////////////////////
   int throttle = throttleCmd; // Received throttle_pulse 
     // Initialize motor commands with throttle
   ESCFRspeed = throttle;
@@ -186,15 +185,15 @@ void pidController(){
     pitchPID = minmax(pitchPID,-400,400);
     rollPID = minmax(rollPID,-400,400);
     // Calculate pulse duration for each ESC
-    ESCFRspeed = throttle + rollPID - pitchPID - yawPID;
-    ESCFLspeed = throttle - rollPID - pitchPID + yawPID;
-    ESCBRspeed = throttle + rollPID + pitchPID + yawPID;
-    ESCBLspeed = throttle - rollPID + pitchPID - yawPID;
+    ESCFRspeed = throttle + rollPID + pitchPID - yawPID;
+    ESCFLspeed = throttle - rollPID + pitchPID + yawPID;
+    ESCBRspeed = throttle + rollPID - pitchPID + yawPID;
+    ESCBLspeed = throttle - rollPID - pitchPID - yawPID;
     // Prevent out-of-range-values
-    ESCFRspeed = minmax(ESCFRspeed, 1020, 1800);
-    ESCFLspeed = minmax(ESCFLspeed, 1020, 1800);
-    ESCBRspeed = minmax(ESCBRspeed, 1020, 1800);
-    ESCBLspeed = minmax(ESCBLspeed, 1020, 1800);
+    ESCFRspeed = minmax(ESCFRspeed, 1050, 1800);
+    ESCFLspeed = minmax(ESCFLspeed, 1050, 1800);
+    ESCBRspeed = minmax(ESCBRspeed, 1050, 1800);
+    ESCBLspeed = minmax(ESCBLspeed, 1050, 1800);
   }
 }
 
@@ -249,15 +248,15 @@ void motorSpeed(){
   ESCBL.writeMicroseconds(ESCBLspeed);
 }
 
-// float now, previousUpdate, deltaTime = 0;
+//float now, previousUpdate, deltaTime = 0;
 
 
 void setup(){
   Serial.begin(9600);
-  ///////////////// ADDED FOR COMMS /////////////////////////////
+  ///////////////// COMMS /////////////////////////////
   connectToWifi();
   server.begin();
-  ///////////////// ADDED FOR COMMS /////////////////////////////
+  ///////////////// COMMS /////////////////////////////
   imuSetup();
   escInit();
   //escCalibration();
@@ -268,8 +267,9 @@ void setup(){
 }
 void loop(){
   while (killFlag!=1){
-    //now = millis();
-    //deltaTime = now - previousTime;
+    //int i = 0;
+    /* now = millis();
+    deltaTime = now - previousTime; */
     ///////////////// ADDED FOR COMMS /////////////////////////////
     WiFiClient client = server.available();
     if (client) {
@@ -277,11 +277,13 @@ void loop(){
     }
     ///////////////// ADDED FOR COMMS /////////////////////////////
     getAngles();
-    //previousTime = now;
+    
 
     calculateErrors();
     pidController();
-    log("Throttle :");
+    motorSpeed();
+    ///////////////// ADDED FOR COMMS /////////////////////////////
+    /* log("Throttle :");
     logln(throttleCmd);
     log("Kp :");
     logln(Kp[PITCH_INDEX]);
@@ -290,8 +292,27 @@ void loop(){
     log("Kd :");
     logln(Kd[PITCH_INDEX]);
     log("FLAG");
-    logln(killFlag);
-    motorSpeed();
+    logln(killFlag); */
+    ///////////////// ADDED FOR COMMS /////////////////////////////
+    
+    ////////////////////////////////// ESCs DEBUG //////////////////////////////////
+    /* if (i%50 == 0) {
+      log("FRONT RIGHT : ");
+      log(ESCFRspeed);
+      logln("///////////");
+      log("FRONT LEFT : ");
+      log(ESCFLspeed);
+      logln("///////////");
+      log("BACK RIGHT : ");
+      log(ESCBRspeed);
+      logln("///////////");
+      log("BACK LEFT : ");
+      log(ESCBLspeed);
+      logln("///////////");
+    }
+    i++; */
+    ////////////////////////////////// ESCs DEBUG //////////////////////////////////
+    // previousTime = now;
   }
   secMeasure(); exit(0);
   /* if(deltaTime > 8){
@@ -300,3 +321,8 @@ void loop(){
     motorSpeed();
   } */
 }
+
+// ROLL RIGHT IS GOOD, RIGHT MOTORS ARE ACCELERATING.
+// ROLL LEFT IS GOOD, LEFT MOTORS ARE ACCELERATING.
+// PITCH FORWARD IS GOOD, FRONT MOTORS ARE ACCELERATING.
+// PITCH BACK IS GOOD, BACK MOTORS ARE ACCELERATING.

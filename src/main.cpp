@@ -267,8 +267,8 @@ void setup(){
 }
 void loop(){
   while (killFlag!=1){
-    //int i = 0;
-    /* now = millis();
+    /* int i = 0;
+    now = millis();
     deltaTime = now - previousTime; */
     ///////////////// ADDED FOR COMMS /////////////////////////////
     WiFiClient client = server.available();
@@ -326,4 +326,4 @@ void loop(){
 // ROLL RIGHT IS GOOD, RIGHT MOTORS ARE ACCELERATING.
 // ROLL LEFT IS GOOD, LEFT MOTORS ARE ACCELERATING.
 // PITCH FORWARD IS GOOD, FRONT MOTORS ARE ACCELERATING.
-// PITCH BACK IS GOOD, BACK MOTORS ARE ACCELERATING.
+// PITCH BACK IS GOOD, BACK MOTORS ARE ACCELERATING. 

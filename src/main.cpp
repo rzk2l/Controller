@@ -19,6 +19,8 @@
 #define ROLL_INDEX 2
 #define THROTTLE_INDEX 3
 //--------------------
+#define LED_PIN 26
+//--------------------
 volatile unsigned int pulseLength[4] = {1500, 1500, 1500, 1200};
 unsigned long ESCFRspeed, ESCFLspeed, ESCBRspeed, ESCBLspeed = 1000;
 
@@ -276,6 +278,7 @@ void loop(){
       handleClientRequest(client);
     }
     ///////////////// ADDED FOR COMMS /////////////////////////////
+    digitalWrite(LED_PIN,HIGH);
     getAngles();
     
 

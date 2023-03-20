@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <ESP32Servo.h> 
 #include <Wire.h>
-#include <mpu_funcs.h>
+#include <MPU_funcs.h>
 
 ///////////////// COMMS /////////////////////////////
 #include <Comms_funcs_gui.h>
@@ -51,7 +51,7 @@ void escInit(){
   ESCBR.attach(MOTOR_PIN_BR,MIN_SPEED,MAX_SPEED);
   ESCBL.attach(MOTOR_PIN_BL,MIN_SPEED,MAX_SPEED);
 
-  resetAngles(&pitch,&roll,&yaw);
+  //resetAngles(&pitch,&roll,&yaw);
 }
 
 void getAngles(){
@@ -240,7 +240,7 @@ void secMeasure(){
   ESCFL.writeMicroseconds(1000);
   ESCBR.writeMicroseconds(1000);
   ESCBL.writeMicroseconds(1000);
-  delay(10000);
+  delay(15000);
 }
 
 void motorSpeed(){
@@ -263,8 +263,7 @@ void setup(){
   escInit();
   //escCalibration();
   imuCalibration();
-  resetAngles(&pitch,&roll,&yaw);
-  
+
   resetPidController();
 }
 void loop(){

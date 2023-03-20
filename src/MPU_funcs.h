@@ -6,6 +6,8 @@
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
 
+#define CALIB_NB 1500
+
 Adafruit_MPU6050 mpu;
 sensors_event_t accelero, gyroscope, tempurature;
 
@@ -51,7 +53,7 @@ void imuCalibration(){
   int iter = 0;
   AccXangleError = 0; 
   AccYangleError = 0;
-  while (iter<1500){
+  while (iter<CALIB_NB){
     mpu.getEvent(&accelero,&gyroscope,&tempurature);
     AccX = (accelero.acceleration.x);
     AccY = (accelero.acceleration.y);
@@ -60,12 +62,12 @@ void imuCalibration(){
     AccYangleError += (atan(-1*AccX/sqrt(pow(AccY,2)+pow(AccZ,2)))* 180/PI);
     iter++;
   }
-  AccXangleError = AccXangleError/1500;
-  AccYangleError = AccYangleError/1500;
+  AccXangleError = AccXangleError/CALIB_NB;
+  AccYangleError = AccYangleError/CALIB_NB;
 
   iter = 0;
   GyroXError, GyroYError, GyroZError, prevYawError = 0;
-   while (iter<1500){
+   while (iter<CALIB_NB){
     mpu.getEvent(&accelero,&gyroscope,&tempurature);
     GyroX = gyroscope.gyro.x;
     GyroY = gyroscope.gyro.y;
@@ -79,9 +81,9 @@ void imuCalibration(){
     GyroZError += GyroZ;
     iter++;
   }
-  GyroXError = GyroXError/1500;
-  GyroYError = GyroYError/1500;
-  GyroZError = GyroZError/1500;
+  GyroXError = GyroXError/CALIB_NB;
+  GyroYError = GyroYError/CALIB_NB;
+  GyroZError = GyroZError/CALIB_NB;
 
   Serial.println("IMU CALIBRATED!");
 }

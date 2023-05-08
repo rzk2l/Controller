@@ -10,8 +10,8 @@ WiFiServer server(80);
 
 #define WIFI_TIMEOUT_MS 20000
 
-const char* ssid = "Quedusalzerr";
-const char* password = "667mmsovg";
+const char* ssid = "AndroidAP1053";
+const char* password = "enah9098";
 
 int throttleCmd = 1000;
 int killFlag = 0;
@@ -22,7 +22,7 @@ void connectToWifi(){
   WiFi.mode(WIFI_STA);             //THE ESP CONNECTS TO AN EXISTING WIFI NETWORK (STA = STATION)(AP = ACCESS POINT)
   WiFi.begin(ssid,password);
 
-  unsigned long startConnectionTime = millis();
+  //unsigned long startConnectionTime = millis();
 
   while(WiFi.status() != WL_CONNECTED){
     log(".");

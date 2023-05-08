@@ -6,6 +6,7 @@
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
 
+
 #define CALIB_NB 1500
 
 Adafruit_MPU6050 mpu;
@@ -58,8 +59,8 @@ void imuCalibration(){
     AccX = (accelero.acceleration.x);
     AccY = (accelero.acceleration.y);
     AccZ = (accelero.acceleration.z);
-    AccXangleError += (atan(AccY/sqrt(pow(AccX,2)+pow(AccZ,2)))* 180/PI);
-    AccYangleError += (atan(-1*AccX/sqrt(pow(AccY,2)+pow(AccZ,2)))* 180/PI);
+    AccXangleError += atan2(AccY, sqrt(pow(AccZ,2) + pow(AccX,2))) * 180/PI;
+    AccYangleError +=  atan2(-AccX, sqrt(pow(AccY,2) + pow(AccZ,2))) * 180/PI;
     iter++;
   }
   AccXangleError = AccXangleError/CALIB_NB;
@@ -100,8 +101,10 @@ void findAngles(float *pitch_angle, float *roll_angle, float *yaw_angle){
   AccY = (accelero.acceleration.y);
   AccZ = (accelero.acceleration.z);
 
-  AngleFromAccX = (atan(AccY/sqrt(pow(AccX,2)+pow(AccZ,2)))* 180/PI) - AccXangleError;
-  AngleFromAccY = (atan(-1*AccX/sqrt(pow(AccY,2)+pow(AccZ,2)))* 180/PI) - AccYangleError;
+  AngleFromAccX = atan2(AccY, sqrt(pow(AccZ,2) + pow(AccX,2))) * 180/PI - AccXangleError;
+  AngleFromAccY = atan2(-AccX, sqrt(pow(AccY,2) + pow(AccZ,2))) * 180/PI - AccYangleError;
+  /* AngleFromAccX = (atan2(AccY,AccZ)* 180/PI) - AccXangleError;
+  AngleFromAccY = (asin(AccX/9.81) * 180/PI) - AccYangleError; */
 
 
   previousTime = currentTime;

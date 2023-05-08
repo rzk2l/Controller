@@ -32,9 +32,9 @@ float errorsDelta[3] = {0,0,0}; // FOR THE DERIVATIVE PART
 float previousError[3] = {0,0,0}; // FOR THE DERIVATIVE PART
 
 //PID COEFFICIENTS YAW,PITCH, ROLL
-float Kp[3] = {3 ,0 ,0};
-float Ki[3] = {0.02 ,0 ,0};
-float Kd[3] = {0 ,0 ,0};
+volatile float Kp[3] = {3 ,0 ,0};
+volatile float Ki[3] = {0.02 ,0 ,0};
+volatile float Kd[3] = {0 ,0 ,0};
 
 Servo ESCFR;
 Servo ESCFL;
@@ -51,7 +51,6 @@ void escInit(){
   ESCBR.attach(MOTOR_PIN_BR,MIN_SPEED,MAX_SPEED);
   ESCBL.attach(MOTOR_PIN_BL,MIN_SPEED,MAX_SPEED);
 
-  //resetAngles(&pitch,&roll,&yaw);
 }
 
 void getAngles(){
@@ -128,9 +127,9 @@ void calculateErrors()
 
   // Keep values in acceptable range
 
-  errorsSum[YAW_INDEX] = minmax(errorsSum[YAW_INDEX], -400, 400);
-  errorsSum[PITCH_INDEX] = minmax(errorsSum[PITCH_INDEX], -400, 400);
-  errorsSum[ROLL_INDEX] = minmax(errorsSum[ROLL_INDEX], -400, 400);
+  errorsSum[YAW_INDEX] = minmax(errorsSum[YAW_INDEX], -200, 200);
+  errorsSum[PITCH_INDEX] = minmax(errorsSum[PITCH_INDEX], -200, 200);
+  errorsSum[ROLL_INDEX] = minmax(errorsSum[ROLL_INDEX], -200, 200);
 
   // Calculate error delta : Derivative coefficients
   errorsDelta[YAW_INDEX] = errors[YAW_INDEX] - previousError[YAW_INDEX];
@@ -183,9 +182,9 @@ void pidController(){
     pitchPID = (errors[PITCH_INDEX]*Kp[PITCH_INDEX])+(errorsSum[PITCH_INDEX]*Ki[PITCH_INDEX])+(errorsDelta[PITCH_INDEX]*Kd[PITCH_INDEX]);
     rollPID = (errors[ROLL_INDEX]*Kp[ROLL_INDEX])+(errorsSum[ROLL_INDEX]*Ki[ROLL_INDEX])+(errorsDelta[ROLL_INDEX]*Kd[ROLL_INDEX]);
     // LIMIT THE VALUES OF THE CORRECTION
-    yawPID = minmax(yawPID,-400,400);
-    pitchPID = minmax(pitchPID,-400,400);
-    rollPID = minmax(rollPID,-400,400);
+    yawPID = minmax(yawPID,-200,200);
+    pitchPID = minmax(pitchPID,-200,200);
+    rollPID = minmax(rollPID,-200,200);
     // Calculate pulse duration for each ESC
     ESCFRspeed = throttle + rollPID + pitchPID - yawPID;
     ESCFLspeed = throttle - rollPID + pitchPID + yawPID;
@@ -240,6 +239,7 @@ void secMeasure(){
   ESCFL.writeMicroseconds(1000);
   ESCBR.writeMicroseconds(1000);
   ESCBL.writeMicroseconds(1000);
+  pinMode(LED_PIN,0);
   delay(15000);
 }
 
@@ -254,13 +254,14 @@ void motorSpeed(){
 
 
 void setup(){
+  pinMode(LED_PIN,OUTPUT);
   Serial.begin(9600);
   ///////////////// COMMS /////////////////////////////
   connectToWifi();
   server.begin();
   ///////////////// COMMS /////////////////////////////
   imuSetup();
-  escInit();
+  escInit(); 
   //escCalibration();
   imuCalibration();
 
@@ -268,8 +269,7 @@ void setup(){
 }
 void loop(){
   while (killFlag!=1){
-    /* int i = 0;
-    now = millis();
+    /* now = millis();
     deltaTime = now - previousTime; */
     ///////////////// ADDED FOR COMMS /////////////////////////////
     WiFiClient client = server.available();
@@ -277,7 +277,7 @@ void loop(){
       handleClientRequest(client);
     }
     ///////////////// ADDED FOR COMMS /////////////////////////////
-    digitalWrite(LED_PIN,HIGH);
+    digitalWrite(LED_PIN,1);
     getAngles();
     
 
@@ -298,7 +298,8 @@ void loop(){
     ///////////////// ADDED FOR COMMS /////////////////////////////
     
     ////////////////////////////////// ESCs DEBUG //////////////////////////////////
-    /* if (i%50 == 0) {
+    /* int i = 0;
+    if (i%500 == 0) {
       log("FRONT RIGHT : ");
       log(ESCFRspeed);
       logln("///////////");
@@ -315,6 +316,12 @@ void loop(){
     i++; */
     ////////////////////////////////// ESCs DEBUG //////////////////////////////////
     // previousTime = now;
+    /* logln(Kp[PITCH_INDEX]);
+    logln(Kp[ROLL_INDEX]);
+    logln(Ki[PITCH_INDEX]);
+    logln(Ki[ROLL_INDEX]);
+    logln(Kd[PITCH_INDEX]);
+    logln(Kd[ROLL_INDEX]); */
   }
   secMeasure(); exit(0);
   /* if(deltaTime > 8){

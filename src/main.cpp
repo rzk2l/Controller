@@ -44,6 +44,7 @@ Servo ESCBL;
 float pitch, roll, yaw;
 float yawCommand, pitchCommand, rollCommand = 0;
 //float batteryVoltage;
+double deltaTime, now,prevTime = 0;
 
 void escInit(){
   ESCFR.attach(MOTOR_PIN_FR,MIN_SPEED,MAX_SPEED);
@@ -268,22 +269,44 @@ void setup(){
   resetPidController();
 }
 void loop(){
+  int i = 0;
   while (killFlag!=1){
-    /* now = millis();
-    deltaTime = now - previousTime; */
-    ///////////////// ADDED FOR COMMS /////////////////////////////
-    WiFiClient client = server.available();
-    if (client) {
-      handleClientRequest(client);
+    now = millis();
+    while (i<1000){
+      
+        ///////////////// ADDED FOR COMMS /////////////////////////////
+      WiFiClient client = server.available();
+      if (client) {
+        handleClientRequest(client);
+      }
+      ///////////////// ADDED FOR COMMS /////////////////////////////
+      digitalWrite(LED_PIN,1);
+      getAngles();
+      //if(deltaTime > 8){
+      calculateErrors();
+      pidController();
+      motorSpeed();
+      i++;
+    //}
     }
-    ///////////////// ADDED FOR COMMS /////////////////////////////
-    digitalWrite(LED_PIN,1);
-    getAngles();
+    deltaTime = (now - prevTime)/ 1000;
+    log("Time : ");
+    logln(deltaTime);
+    prevTime = now;
+    i = 0;
+    logln(throttleCmd);
+    logln("///////////");
+    logln(Kp[PITCH_INDEX]);
+    logln(Kp[ROLL_INDEX]);
+    logln("///////////");
+    logln(Ki[PITCH_INDEX]);
+    logln(Ki[ROLL_INDEX]);
+    logln("///////////");
+    logln(Kd[PITCH_INDEX]);
+    logln(Kd[ROLL_INDEX]);
+    logln("///////////");
+  
     
-
-    calculateErrors();
-    pidController();
-    motorSpeed();
     ///////////////// ADDED FOR COMMS /////////////////////////////
     /* log("Throttle :");
     logln(throttleCmd);

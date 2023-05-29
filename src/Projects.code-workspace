@@ -1,0 +1,30 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		},
+		{
+			"name": "Controller",
+			"path": ".."
+		},
+		{
+			"name": "MPU",
+			"path": "../../MPU"
+		},
+		{
+			"name": "MPU WITH ADAFRUIT",
+			"path": "../../MPU WITH ADAFRUIT"
+		},
+		{
+			"name": "BMP280",
+			"path": "../../BMP280"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"cmath": "cpp",
+			"sstream": "cpp",
+			"regex": "cpp"
+		}
+	}
+}

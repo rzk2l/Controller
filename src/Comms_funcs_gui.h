@@ -10,8 +10,8 @@ WiFiServer server(80);
 
 #define WIFI_TIMEOUT_MS 20000
 
-const char* ssid = "AndroidAP1053";
-const char* password = "enah9098";
+const char* ssid = "Quedusalzerr";
+const char* password = "667MMSovg";
 
 int throttleCmd = 1000;
 int killFlag = 0;

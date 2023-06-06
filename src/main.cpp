@@ -268,7 +268,7 @@ void setup(){
   resetPidController();
 }
 void loop(){
-  while (killFlag!=1){
+  while (killFlag!=1 && WiFi.status() == WL_CONNECTED){
     /* now = millis();
     deltaTime = now - previousTime; */
     ///////////////// ADDED FOR COMMS /////////////////////////////
@@ -284,6 +284,15 @@ void loop(){
     calculateErrors();
     pidController();
     motorSpeed();
+    /////////////////////// IN CASE WIFI DISCONNECTS //////////////////////////
+    /* if (WiFi.status() != WL_CONNECTED){
+      ESCFR.writeMicroseconds(1200);
+      ESCFL.writeMicroseconds(1200);
+      ESCBR.writeMicroseconds(1200);
+      ESCBL.writeMicroseconds(1200);
+    } */
+    /////////////////////// IN CASE WIFI DISCONNECTS //////////////////////////
+    
     ///////////////// ADDED FOR COMMS /////////////////////////////
     /* log("Throttle :");
     logln(throttleCmd);

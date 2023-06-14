@@ -13,9 +13,9 @@ WiFiServer server(80);
 const char* ssid = "Quedusalzerr";
 const char* password = "667MMSovg";
 
-int throttleCmd = 1000;
-int killFlag = 0;
-float newKp, newKi, newKd = 0;
+volatile int throttleCmd = 1000;
+volatile int killFlag = 0;
+volatile float newKp, newKi, newKd = 0;
 
 void connectToWifi(){
   log("Connecting to wifi");

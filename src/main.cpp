@@ -23,6 +23,7 @@
 //--------------------
 volatile unsigned int pulseLength[4] = {1500, 1500, 1500, 1200};
 unsigned long ESCFRspeed, ESCFLspeed, ESCBRspeed, ESCBLspeed = 1000;
+volatile int throttle;
 
 // GLOBAL VARS FOR PID CONTROLLER 
 float angle_Setpoints[3] = {0,0,0}; // YAW, PITCH, ROLL
@@ -169,7 +170,7 @@ void pidController(){
   Kd[PITCH_INDEX] = newKd;
   Kd[ROLL_INDEX] = newKd;
   ///////////////// COMMS /////////////////////////////
-  int throttle = throttleCmd; // Received throttle_pulse 
+  throttle  = throttleCmd; // Received throttle_pulse 
     // Initialize motor commands with throttle
   ESCFRspeed = throttle;
   ESCFLspeed = throttle;

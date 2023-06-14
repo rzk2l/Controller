@@ -77,17 +77,3 @@ void handleClientRequest(WiFiClient client){
   client.write((uint8_t*)&kd, 4);
   //client.write((uint8_t*)&flag, 2);
 }
-
-
-/* void setup() {
-  Serial.begin(9600);
-  connectToWifi();
-  server.begin();
-}
-
-void loop() {
- WiFiClient client = server.available();
-  if (client) {
-    handleClientRequest(client);
-  }
-} */

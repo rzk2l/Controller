@@ -128,9 +128,9 @@ void calculateErrors()
 
   // Keep values in acceptable range
 
-  errorsSum[YAW_INDEX] = minmax(errorsSum[YAW_INDEX], -200, 200);
-  errorsSum[PITCH_INDEX] = minmax(errorsSum[PITCH_INDEX], -200, 200);
-  errorsSum[ROLL_INDEX] = minmax(errorsSum[ROLL_INDEX], -200, 200);
+  errorsSum[YAW_INDEX] = minmax(errorsSum[YAW_INDEX], -400, 400);
+  errorsSum[PITCH_INDEX] = minmax(errorsSum[PITCH_INDEX], -400, 400);
+  errorsSum[ROLL_INDEX] = minmax(errorsSum[ROLL_INDEX], -400, 400);
 
   // Calculate error delta : Derivative coefficients
   errorsDelta[YAW_INDEX] = errors[YAW_INDEX] - previousError[YAW_INDEX];
@@ -183,9 +183,9 @@ void pidController(){
     pitchPID = (errors[PITCH_INDEX]*Kp[PITCH_INDEX])+(errorsSum[PITCH_INDEX]*Ki[PITCH_INDEX])+(errorsDelta[PITCH_INDEX]*Kd[PITCH_INDEX]);
     rollPID = (errors[ROLL_INDEX]*Kp[ROLL_INDEX])+(errorsSum[ROLL_INDEX]*Ki[ROLL_INDEX])+(errorsDelta[ROLL_INDEX]*Kd[ROLL_INDEX]);
     // LIMIT THE VALUES OF THE CORRECTION
-    yawPID = minmax(yawPID,-200,200);
-    pitchPID = minmax(pitchPID,-200,200);
-    rollPID = minmax(rollPID,-200,200);
+    yawPID = minmax(yawPID,-400,400);
+    pitchPID = minmax(pitchPID,-400,400);
+    rollPID = minmax(rollPID,-400,400);
     // Calculate pulse duration for each ESC
     ESCFRspeed = throttle + rollPID + pitchPID - yawPID;
     ESCFLspeed = throttle - rollPID + pitchPID + yawPID;
@@ -269,7 +269,7 @@ void setup(){
   resetPidController();
 }
 void loop(){
-  while (killFlag!=1){
+  while (killFlag!=1 && WiFi.status() == WL_CONNECTED){
     /* now = millis();
     deltaTime = now - previousTime; */
     ///////////////// ADDED FOR COMMS /////////////////////////////
@@ -285,6 +285,15 @@ void loop(){
     calculateErrors();
     pidController();
     motorSpeed();
+    /////////////////////// IN CASE WIFI DISCONNECTS //////////////////////////
+    /* if (WiFi.status() != WL_CONNECTED){
+      ESCFR.writeMicroseconds(1200);
+      ESCFL.writeMicroseconds(1200);
+      ESCBR.writeMicroseconds(1200);
+      ESCBL.writeMicroseconds(1200);
+    } */
+    /////////////////////// IN CASE WIFI DISCONNECTS //////////////////////////
+    
     ///////////////// ADDED FOR COMMS /////////////////////////////
     /* log("Throttle :");
     logln(throttleCmd);

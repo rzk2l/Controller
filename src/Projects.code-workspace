@@ -2,6 +2,14 @@
     "folders": [
         {
             "path": ".."
+        },
+        {
+            "name": "MPU",
+            "path": "../../MPU"
+        },
+        {
+            "name": "MPU WITH ADAFRUIT",
+            "path": "../../MPU WITH ADAFRUIT"
         }
     ]
 }

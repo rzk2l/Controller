@@ -43,6 +43,7 @@ Servo ESCBR;
 Servo ESCBL;
 
 float pitch, roll, yaw;
+float yawPID, rollPID, pitchPID = 0;
 float yawCommand, pitchCommand, rollCommand = 0;
 //float batteryVoltage;
 
@@ -108,17 +109,11 @@ float minmax(float value, float min_value, float max_value)
   return value;
 }
 
-void calculateErrors()
-{
+void calculateErrors(){
   // Calculate current errors
   errors[YAW_INDEX] = yaw - yawCommand;
   errors[PITCH_INDEX] = pitch - pitchCommand;
   errors[ROLL_INDEX] = roll - rollCommand;
- /*  Serial.print(errors[PITCH_INDEX]);
-  Serial.print(" ////// ");
-  Serial.print(errors[ROLL_INDEX]);
-  Serial.print(" /////// ");
-  Serial.println(errors[YAW_INDEX]); */
 
   // Calculate sum of errors : Integral coefficients
 
@@ -143,8 +138,7 @@ void calculateErrors()
   previousError[ROLL_INDEX] = errors[ROLL_INDEX];
 }
 
-void resetPidController()
-{
+void resetPidController(){
   errors[YAW_INDEX] = 0;
   errors[PITCH_INDEX] = 0;
   errors[ROLL_INDEX] = 0;
@@ -159,9 +153,6 @@ void resetPidController()
 }
 
 void pidController(){
-  float yawPID = 0;
-  float pitchPID = 0;
-  float rollPID = 0;
   ///////////////// COMMS /////////////////////////////
   Kp[PITCH_INDEX] = newKp;
   Kp[ROLL_INDEX] = newKp;
@@ -199,40 +190,6 @@ void pidController(){
   }
 }
 
-/* float calculateSetPoint(int desiredPulse)
-{
-  float set_point = 0;
-
-  // Need a dead band of 16µs for better result
-  if (desiredPulse > 1510){
-    set_point = desiredPulse - 1510;
-  }
-  else if (desiredPulse < 1490){
-    set_point = desiredPulse - 1490;
-  }
-  set_point /= 15; // Value 15 limits maximum angle value to ±32.8°
-
-  return set_point;
-} */
-
-/* void calculateSetPoints()
-{
-  angle_Setpoints[YAW_INDEX] = calculateYawSetPoint(pulseLength[YAW_INDEX], pulseLength[THROTTLE_INDEX]);
-  angle_Setpoints[PITCH_INDEX] = calculateSetPoint(pulseLength[PITCH_INDEX]);
-  angle_Setpoints[ROLL_INDEX] = calculateSetPoint(pulseLength[ROLL_INDEX]);
-} */
-
-/* float calculateYawSetPoint(int desired_yaw, int desired_throttle_pulse)
-{
-  float set_point = 0;
-  // Do not yaw when turning off the motors
-  if (desired_throttle_pulse > 1050){
-    // There is no notion of angle on this axis as the quadcopter can turn on itself
-    set_point = calculateSetPoint(desired_yaw);
-  }
-
-  return set_point;
-} */
 
 void secMeasure(){
   //ESCFLspeed, ESCFRspeed, ESCBRspeed, ESCBLspeed = 1000;
@@ -250,8 +207,6 @@ void motorSpeed(){
   ESCBR.writeMicroseconds(ESCBRspeed);
   ESCBL.writeMicroseconds(ESCBLspeed);
 }
-
-//float now, previousUpdate, deltaTime = 0;
 
 
 void setup(){

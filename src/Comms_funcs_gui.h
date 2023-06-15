@@ -71,9 +71,9 @@ void handleClientRequest(WiFiClient client){
   killFlag = flag;
   
   // Send a response back to the client
-  client.write((uint8_t*)&th, 2);
+  /* client.write((uint8_t*)&th, 2);
   client.write((uint8_t*)&kp, 4);
   client.write((uint8_t*)&ki, 4);
-  client.write((uint8_t*)&kd, 4);
+  client.write((uint8_t*)&kd, 4); */
   //client.write((uint8_t*)&flag, 2);
 }

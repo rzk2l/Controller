@@ -224,7 +224,7 @@ void setup(){
   resetPidController();
 }
 void loop(){
-  while (killFlag!=1 && WiFi.status() == WL_CONNECTED){
+  while (killFlag!=1){
     /* now = millis();
     deltaTime = now - previousTime; */
     ///////////////// ADDED FOR COMMS /////////////////////////////
@@ -241,12 +241,12 @@ void loop(){
     pidController();
     motorSpeed();
     /////////////////////// IN CASE WIFI DISCONNECTS //////////////////////////
-    /* if (WiFi.status() != WL_CONNECTED){
+    if (WiFi.status() != WL_CONNECTED){
       ESCFR.writeMicroseconds(1200);
       ESCFL.writeMicroseconds(1200);
       ESCBR.writeMicroseconds(1200);
       ESCBL.writeMicroseconds(1200);
-    } */
+    }
     /////////////////////// IN CASE WIFI DISCONNECTS //////////////////////////
     
     ///////////////// ADDED FOR COMMS /////////////////////////////

@@ -13,7 +13,7 @@ WiFiServer server(80);
 const char* ssid = "Quedusalzerr";
 const char* password = "667MMSovg";
 
-volatile int throttleCmd = 1000;
+volatile uint16_t throttleCmd = 1000, prevThrottle;
 volatile int killFlag = 0;
 volatile float newKp, newKi, newKd = 0;
 
@@ -42,7 +42,7 @@ void handleClientRequest(WiFiClient client){
   Serial.println("New client");
   uint16_t th, flag;
   float kp, ki, kd;
-  char buf[16];
+  uint8_t buf[16];
   
   // Receive the packed values from the client
   client.read((uint8_t*)buf, 16);
@@ -63,17 +63,15 @@ void handleClientRequest(WiFiClient client){
   Serial.println(ki);
   Serial.print("kd = ");
   Serial.println(kd); */
-  if (th < 1000) throttleCmd = 1000; 
+  if (th == 0) throttleCmd = prevThrottle;                    // ERROR CHECKING
   else throttleCmd = th;
   newKp = kp;
   newKi = ki;
   newKd = kd;
   killFlag = flag;
+
+  prevThrottle = throttleCmd;                                 // ERROR CHECKING
   
   // Send a response back to the client
-  /* client.write((uint8_t*)&th, 2);
-  client.write((uint8_t*)&kp, 4);
-  client.write((uint8_t*)&ki, 4);
-  client.write((uint8_t*)&kd, 4); */
-  //client.write((uint8_t*)&flag, 2);
+  client.write((uint8_t*)&th, 2);
 }

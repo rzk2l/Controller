@@ -37,7 +37,7 @@ void connectToWifi(){
 
 
 void handleClientRequest(WiFiClient client){
-  Serial.println("New client");
+  //Serial.println("New client");
   uint16_t th, flag;
   float kp, ki, kd;
   char buf[16];

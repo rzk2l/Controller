@@ -20,7 +20,6 @@ float PreviousYaw, PreviousGyroX, PreviousGyroY, PreviousGyroZ = 0;
 float AngleFromAccX, AngleFromAccY;
 
 float currentTime, previousTime, elapsedTime; 
- 
 
 
 void imuSetup(){
@@ -117,13 +116,9 @@ void findAngles(float *pitch_angle, float *roll_angle, float *yaw_angle){
   *yaw_angle = 0.8*(*yaw_angle+(GyroZ*elapsedTime*180)/PI) + 0.2*PreviousYaw;
 
   PreviousYaw = *yaw_angle;
-
   /* Serial.print(*pitch_angle);
-  Serial.print(" ////// ");
-  Serial.print(*roll_angle);
-  Serial.print(" /////// ");
+  Serial.print(",");
   Serial.println(*yaw_angle); */
-  
 }
 
 

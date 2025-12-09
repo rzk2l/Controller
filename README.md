@@ -1,3 +1,3 @@
 # Controller
 
-The code used for my quadcopter controller.
+Quadcopter flight controller and command GUI.
